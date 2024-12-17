@@ -1,26 +1,26 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using HairdresserProject.Models;
+using HairdresserProject.Models; // Adjust according to your project's structure
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Veritabaný baðlantýsýný burada yapýyoruz
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Add PostgreSQL database context
+builder.Services.AddDbContext<SalonDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))); // Use Npgsql for PostgreSQL
 
-// Identity'yi ekliyoruz
+// Add Identity services
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddEntityFrameworkStores<SalonDbContext>()
     .AddDefaultTokenProviders();
+
+// Add MVC support
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Uygulamanýzýn geri kalan konfigürasyonlarý
-app.MapControllers();
-//asdsasa;lkdsaldmlas
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -33,9 +33,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication(); // Ensure authentication middleware is used
 app.UseAuthorization();
 
-// Route yapýlandýrmasý
+app.MapControllers();
+
+// Route configuration
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
