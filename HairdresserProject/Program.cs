@@ -20,7 +20,7 @@ var app = builder.Build();
 
 // Uygulamanýzýn geri kalan konfigürasyonlarý
 app.MapControllers();
-
+//asdsasa;lkdsaldmlas
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
